@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Text, StyleSheet, View, Button } from 'react-native'
+import { Text, View, FlatList } from 'react-native'
 import { getClients } from '../services/Clients'
 import { globalStyle } from '../styles/globalStyle'
+import { Button } from 'react-native-elements'
 
 const Clients = ({ navigation }) => {
     const [clients, setClients] = useState([])
@@ -18,16 +19,22 @@ const Clients = ({ navigation }) => {
 
     return (
         <View style={globalStyle.container}>
-            <Text>Clients</Text>
-            {
-                clients.length === 0 ?
+            <FlatList
+                style={{ width: '100%', padding: 15 }}
+                data={clients}
+                ItemSeparatorComponent={
+                    () => <View style={{ height: 1, backgroundColor: 'black' }} />
+                }
+                ListEmptyComponent={
                     <Text>No hay clientes</Text>
-                    :
-                    clients.map((client, index) => (
-                        <Text key={client.pru_id}>{client.pru_nombre}</Text>
-                    ))
-            }
-            <Button title="Go to Home" onPress={() => navigation.navigate('Home')} />
+                }
+                renderItem={({ item }) => (
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginVertical: 15 }}>
+                        <Text key={item.pru_id}>{item.pru_nombre}</Text>
+                        <Button title="Ver" onPress={() => navigation.navigate('Payments', { client: item })} />
+                    </View>
+                )}
+            />
         </View>
     )
 }

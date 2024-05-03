@@ -1,12 +1,12 @@
 import { Button, StyleSheet, Text, View } from 'react-native'
 import { globalStyle } from '../styles/globalStyle'
 
-const Payments = ({navigation}) => {
+const Payments = ({ route, navigation }) => {
+    const { client } = route.params
     return (
         <View style={globalStyle.container}>
-            <Text>Payments</Text>
-            <Button title='Go to Home' onPress={() => navigation.navigate('Home')} />
-            <Button title='Go to Clients' onPress={() => navigation.navigate('Clients')} />
+            <Text>Payments of {client.pru_nombre}</Text>
+            {/* <Button title='Go to Home' onPress={() => navigation.navigate('Home')} /> */}
         </View>
     )
 }
