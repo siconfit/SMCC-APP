@@ -5,7 +5,7 @@ const Payments = ({ route, navigation }) => {
     const { client } = route.params
     return (
         <View style={globalStyle.container}>
-            <Text>Payments of {client.pru_nombre}</Text>
+            <Text>Payments of {client.nombre}</Text>
             {/* <Button title='Go to Home' onPress={() => navigation.navigate('Home')} /> */}
         </View>
     )

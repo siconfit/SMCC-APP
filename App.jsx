@@ -1,47 +1,43 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from "react"
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { NavigationContainer } from '@react-navigation/native'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import Index from "./src/Index"
+import { NavigationContainer } from "@react-navigation/native"
 import ClientStack from "./src/navigation/ClientStack"
-import Login from "./src/screens/Login"
+import LoginStack from "./src/navigation/LoginStack"
+import { MiContexto } from "./src/navigation/AuthContext"
+import Index from "./src/Index"
 
 const App = () => {
-
-  const [isLoading, setIsLoading] = useState(true);
-  const [userToken, setUserToken] = useState(null);
+  const [isLoading, setIsLoading] = useState(true)
+  const [userToken, setUserToken] = useState(null)
 
   const restoreToken = async () => {
-    let token;
     try {
-      token = await AsyncStorage.getItem('userToken');
+      const token = await AsyncStorage.getItem("userToken")
+      setIsLoading(false)
+      setUserToken(token)
+      console.log('>>>' + userToken)
     } catch (e) {
       // Restaurando el token falló
+      await AsyncStorage.removeItem("userToken")
     }
-    setIsLoading(false);
-    setUserToken(token);
-  };
+  }
 
   useEffect(() => {
-    restoreToken();
-  }, []);
-
-  // if (isLoading) {
-  //   // Puedes mostrar un splash screen
-  //   return null;
-  // }
-
-  const Stack = createNativeStackNavigator()
+    restoreToken()
+  }, [])
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName={userToken === null ? 'Login' : 'ClientStack'}>
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="ClientStack" component={ClientStack} options={{ headerShown: false }} />
-      </Stack.Navigator>
-    </NavigationContainer>
-    // <Index/>
-  )
-}
+    <MiContexto.Provider value={restoreToken}>
+      <NavigationContainer>
+        {userToken !== null ? (
+          <ClientStack />
+        ) : (
+          <LoginStack />
+        )}
+      </NavigationContainer>
+    </MiContexto.Provider>
+    // <Index />
+  );
+};
 
 export default App

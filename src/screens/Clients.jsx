@@ -1,20 +1,28 @@
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useEffect, useState } from 'react'
 import { Text, View, FlatList } from 'react-native'
-import { getClients } from '../services/Clients'
+import { getMyClients } from '../services/Clients'
 import { globalStyle } from '../styles/globalStyle'
 import { Button } from 'react-native-elements'
 
 const Clients = ({ navigation }) => {
     const [clients, setClients] = useState([])
 
+    const restoreToken = async () => {
+        try {
+            const token = await AsyncStorage.getItem('userToken')
+            if (token !== null) {
+                const { usuario_id } = JSON.parse(token)
+                const result = await getMyClients(usuario_id)
+                setClients(result)
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
     useEffect(() => {
-        getClients()
-            .then(res => {
-                setClients(res)
-            })
-            .catch(err => {
-                console.log(err)
-            })
+        restoreToken()
     }, [])
 
     return (
@@ -26,11 +34,14 @@ const Clients = ({ navigation }) => {
                     () => <View style={{ height: 1, backgroundColor: 'black' }} />
                 }
                 ListEmptyComponent={
-                    <Text>No hay clientes</Text>
+                    <Text>No hay clientes para mostrar</Text>
                 }
-                renderItem={({ item }) => (
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginVertical: 15 }}>
-                        <Text key={item.pru_id}>{item.pru_nombre}</Text>
+                renderItem={({ item, index }) => (
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', marginVertical: 15 }}>
+                        <View>
+                            <Text key={'txtName' + index}>{item.cuenta_secundaria_id}</Text>
+                            <Text key={'txtPhone' + index}>{item.cliente_id}</Text>
+                        </View>
                         <Button title="Ver" onPress={() => navigation.navigate('Payments', { client: item })} />
                     </View>
                 )}

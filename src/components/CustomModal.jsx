@@ -1,4 +1,4 @@
-import { Text, View, Pressable, Modal } from 'react-native'
+import { Text, View, Pressable, Modal, ActivityIndicator } from 'react-native'
 import { globalStyle } from '../styles/globalStyle';
 
 const CustomModal = ({ modalVisible, setModalVisible }) => {
@@ -12,13 +12,14 @@ const CustomModal = ({ modalVisible, setModalVisible }) => {
                 setModalVisible(!modalVisible);
             }}>
             <View style={globalStyle.containerModal}>
-                <View style={{backgroundColor : 'white', padding: 20, borderRadius: 10}}>
-                    <Text >Hello World!</Text>
+                <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
+                    {/* <Text >Usuario o contraseña incorrecta</Text>
                     <Pressable
 
                         onPress={() => setModalVisible(!modalVisible)}>
-                        <Text >Hide Modal</Text>
-                    </Pressable>
+                        <Text >Cerrar modal</Text>
+                    </Pressable> */}
+                    <ActivityIndicator size="large" color="#009688" />
                 </View>
             </View>
         </Modal>

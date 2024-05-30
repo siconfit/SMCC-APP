@@ -7,7 +7,7 @@ import { Icon, Button } from "react-native-elements"
 
 const Stack = createNativeStackNavigator()
 
-export default function ClientStacks() {
+export default function ClientStacks(props) {
     return (
         <Stack.Navigator initialRouteName="Home" screenOptions={{ headerTintColor: '#000', headerStyle: { backgroundColor: '#4FE7AF' } }}>
             <Stack.Screen name="Home" component={Home} />
@@ -21,7 +21,7 @@ export default function ClientStacks() {
                                 onPress={() => {
                                     navigation.navigate("RegisterClient")
                                 }}
-                                buttonStyle={{ backgroundColor: '#0C81E4' }}
+                                buttonStyle={{ backgroundColor: '#009688' }}
                             />
                         </>
                     )
