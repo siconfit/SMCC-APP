@@ -8,17 +8,15 @@ import Index from "./src/Index"
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true)
-  const [userToken, setUserToken] = useState(null)
+  const [userToken, setUserToken] = useState("")
 
   const restoreToken = async () => {
     try {
       const token = await AsyncStorage.getItem("userToken")
       setIsLoading(false)
       setUserToken(token)
-      console.log('>>>' + userToken)
     } catch (e) {
       // Restaurando el token falló
-      await AsyncStorage.removeItem("userToken")
     }
   }
 

@@ -12,8 +12,8 @@ const Clients = ({ navigation }) => {
         try {
             const token = await AsyncStorage.getItem('userToken')
             if (token !== null) {
-                const { usuario_id } = JSON.parse(token)
-                const result = await getMyClients(usuario_id)
+                const { cuenta_secundaria_id } = JSON.parse(token)
+                const result = await getMyClients(cuenta_secundaria_id)
                 setClients(result)
             }
         } catch (e) {

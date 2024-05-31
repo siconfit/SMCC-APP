@@ -7,6 +7,10 @@ export const globalStyle = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
+    containerScroll: {
+        flex: 1,
+        backgroundColor: '#E0F2F1',
+    },
     containerModal: {
         flex: 1,
         backgroundColor: 'rgba(0,0,0,0.5)',
@@ -22,7 +26,8 @@ export const globalStyle = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 10,
         marginBottom: 10,
-        elevation: 3
+        elevation: 3,
+        marginHorizontal: 10
     },
     textError: {
         color: 'red',
@@ -32,6 +37,7 @@ export const globalStyle = StyleSheet.create({
     button: {
         paddingVertical: 10,
         borderRadius: 25,
+        marginHorizontal: 10,
         elevation: 3
     },
 })

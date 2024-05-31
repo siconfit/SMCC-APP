@@ -1,28 +1,38 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { View, Text, TextInput, Button } from 'react-native'
+import { View, Text, TextInput, ScrollView } from 'react-native'
 import { globalStyle } from '../styles/globalStyle'
 import CustomButton from '../components/CustomButton'
-import { createClient } from '../services/Clients'
+import { createClient, linkClient } from '../services/Clients'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 import { useEffect, useState } from 'react'
 
 export default function RegisterClient() {
-    const [user, setUser] = useState(null)
+    const [user, setUser] = useState([])
 
     const validationSchema = Yup.object({
         nombre: Yup.string()
-            .required('El nombre es requerido'),
+            .required('Campo obligatorio'),
         cedula: Yup.string().min(10).max(10)
-            .required('La cédula es requerida'),
-
+            .required('Campo obligatorio'),
+        direccion: Yup.string()
+            .required('Campo obligatorio'),
+        telefono: Yup.string().min(10).max(10)
+            .required('Campo obligatorio')
     })
 
-    const onCretaClient = async (values, id) => {
+    const onCretaClient = async (values) => {
         try {
-            // const firstRes = await createClient(values)
-            // const secondRed = await createClient(id)
-
+            var msg = ""
+            const firstRes = await createClient(values)
+            msg += firstRes.message
+            const data = {
+                cliente_id: firstRes.cliente_id,
+                cuenta_secundaria_id: user.cuenta_secundaria_id
+            }
+            const secondRes = await linkClient(data)
+            msg += secondRes.message
+            alert(msg, null, 2)
         } catch (error) {
 
         }
@@ -32,7 +42,8 @@ export default function RegisterClient() {
         try {
             const token = await AsyncStorage.getItem('userToken')
             if (token !== null) {
-                setUser(JSON.parse(token))
+                var data = JSON.parse(token)
+                setUser(data)
             }
         } catch (e) {
             console.log(e)
@@ -43,22 +54,31 @@ export default function RegisterClient() {
         restoreToken()
     }, [])
 
+    useEffect(() => {
+        console.log('+++++', user)
+    }, [user])
+
     return (
-        <View style={globalStyle.container}>
+        <ScrollView style={globalStyle.containerScroll}>
             <Formik
-                initialValues={{ id: '1', nombre: '', cedula: '', direccion: '', telefono: '' }}
-                onSubmit={values => onCretaClient(values, user.usuario_id)}
+                key={user}
+                initialValues={{ cuenta_principal_id: user.cuenta_principal_id, nombre: '', cedula: '', direccion: '', telefono: '' }}
+                onSubmit={values => {
+                    // onCretaClient({ ...values, cuenta_principal_id: Number(values.cuenta_principal_id) })
+                    onCretaClient(values)
+                }}
                 validationSchema={validationSchema}
             >
                 {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-                    <View style={{ width: '100%', paddingHorizontal: 15 }}>
-                        <TextInput
-                            onChangeText={handleChange('id')}
-                            onBlur={handleBlur('id')}
-                            value={values.id}
+                    <View style={{ width: '100%', paddingHorizontal: 15, marginVertical: 20 }}>
+                        {/* <TextInput
+                            onChangeText={handleChange('cuenta_principal_id')}
+                            onBlur={handleBlur('cuenta_principal_id')}
+                            value={values.cuenta_principal_id}
                             editable={false}
                             style={globalStyle.customInput}
-                        />
+                        /> */}
+                        <Text>{values.cuenta_principal_id}</Text>
                         <TextInput
                             onChangeText={handleChange('nombre')}
                             onBlur={handleBlur('nombre')}
@@ -72,6 +92,7 @@ export default function RegisterClient() {
                             onBlur={handleBlur('cedula')}
                             value={values.cedula}
                             placeholder='Num. de cédula'
+                            keyboardType='numeric'
                             style={globalStyle.customInput}
                         />
                         {errors.cedula && touched.cedula ? <Text style={globalStyle.textError}>{errors.cedula}</Text> : null}
@@ -88,17 +109,17 @@ export default function RegisterClient() {
                             onBlur={handleBlur('telefono')}
                             value={values.telefono}
                             placeholder='Teléfono del cliente'
+                            keyboardType='numeric'
                             style={globalStyle.customInput}
                         />
                         {errors.telefono && touched.telefono ? <Text style={globalStyle.textError}>{errors.telefono}</Text> : null}
-                        {/* <Button onPress={() => handleSubmit()} title="Submit" /> */}
                         <CustomButton
                             title={'REGISTRAR'}
-                            funcion={() => console.log('registrando')}
+                            funcion={() => handleSubmit()}
                         />
                     </View>
                 )}
             </Formik>
-        </View>
+        </ScrollView >
     )
 }
