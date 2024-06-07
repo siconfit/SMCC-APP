@@ -1,11 +1,12 @@
 import { useEffect, useState, useContext } from "react"
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { Button, Text, View } from "react-native"
+import { Text, View, TextInput } from "react-native"
 import { globalStyle } from "../styles/globalStyle"
 import { MiContexto } from "../navigation/AuthContext"
 import CustomButton from "../components/CustomButton"
+import IrregularHeader from "../components/IrregularHeader"
 
-const Home = ({ route, navigation }) => {
+export default function Home() {
   const cerrarSesion = useContext(MiContexto)
   const [user, setUser] = useState("")
 
@@ -28,7 +29,8 @@ const Home = ({ route, navigation }) => {
     } catch (e) {
       console.log(e)
     }
-  };
+  }
+
 
   useEffect(() => {
     restoreToken()
@@ -36,23 +38,16 @@ const Home = ({ route, navigation }) => {
 
   return (
     <View style={globalStyle.container}>
-      <Text>Bienvenido {user.nombre} </Text>
-      <CustomButton
-        title={'goto clients'}
-        funcion={() => navigation.navigate("Clients")}
-      />
-      <CustomButton
-        title={'Cerrar Sesion'}
-        funcion={() => onLogout()}
-      />
-      {/* <Button
-        color={'#009688'}
-        title="Go to Clients"
-        onPress={() => navigation.navigate("Clients")}
-      />
-      <Button color={'#009688'} title="Cerrar Sesion" onPress={() => onLogout()} /> */}
+      <IrregularHeader title={'Inicio'} />
+      <View style={{ flex: 1, justifyContent: 'center' }}>
+
+        <Text>Bienvenido {user.nombre} </Text>
+        <CustomButton
+          title={'Cerrar Sesion'}
+          funcion={() => onLogout()}
+        />
+      </View>
+
     </View>
   )
 }
-
-export default Home

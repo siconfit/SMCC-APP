@@ -3,19 +3,24 @@ import { useEffect, useState } from 'react'
 import { Text, View, FlatList } from 'react-native'
 import { getMyClients } from '../services/Clients'
 import { globalStyle } from '../styles/globalStyle'
-import { Button } from 'react-native-elements'
+import ClientCard from '../components/ClientCard'
+import IrregularHeader from '../components/IrregularHeader'
+import { Icon } from "react-native-elements"
 
 const Clients = ({ navigation }) => {
     const [clients, setClients] = useState([])
+    const [refresh, setRefresh] = useState(false)
 
     const restoreToken = async () => {
         try {
+            setRefresh(true)
             const token = await AsyncStorage.getItem('userToken')
             if (token !== null) {
                 const { cuenta_secundaria_id } = JSON.parse(token)
                 const result = await getMyClients(cuenta_secundaria_id)
                 setClients(result)
             }
+            setRefresh(false)
         } catch (e) {
             console.log(e)
         }
@@ -27,24 +32,29 @@ const Clients = ({ navigation }) => {
 
     return (
         <View style={globalStyle.container}>
+            <IrregularHeader title={'Clientes'}>
+                <View style={{
+                    position: 'absolute',
+                    bottom: -60,
+                    right: 40,
+                }}>
+                    <Icon name="add" type="material" color={'#009688'} reverse onPress={() => navigation.navigate('RegisterClient')} />
+                </View>
+            </IrregularHeader>
             <FlatList
-                style={{ width: '100%', padding: 15 }}
+                style={{ width: '100%', paddingHorizontal: 15 }}
                 data={clients}
                 ItemSeparatorComponent={
-                    () => <View style={{ height: 1, backgroundColor: 'black' }} />
+                    () => <View style={{ marginVertical: 2 }} />
                 }
                 ListEmptyComponent={
                     <Text>No hay clientes para mostrar</Text>
                 }
                 renderItem={({ item, index }) => (
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', marginVertical: 15 }}>
-                        <View>
-                            <Text key={'txtName' + index}>{item.cuenta_secundaria_id}</Text>
-                            <Text key={'txtPhone' + index}>{item.cliente_id}</Text>
-                        </View>
-                        <Button title="Ver" onPress={() => navigation.navigate('Payments', { client: item })} />
-                    </View>
+                    <ClientCard key={index} nombre={item.nombre} cedula={item.cedula} />
                 )}
+                onRefresh={() => restoreToken()}
+                refreshing={refresh}
             />
         </View>
     )

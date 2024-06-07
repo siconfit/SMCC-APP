@@ -6,7 +6,7 @@ const Stack = createNativeStackNavigator()
 
 export default function LoginStack() {
   return (
-    <Stack.Navigator initialRouteName="Login" screenOptions={{ headerTintColor: '#000', headerStyle: { backgroundColor: '#4FE7AF' } }}>
+    <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="MainLogin" component={MainLogin} options={{ headerTitle: 'Autorización principal' }} />
       <Stack.Screen name="SecondaryLogin" component={SecondaryLogin} options={{ headerTitle: 'Autorización secundaria' }} />
     </Stack.Navigator>

@@ -4,7 +4,6 @@ export const globalStyle = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#E0F2F1',
-        justifyContent: 'center',
         alignItems: 'center'
     },
     containerScroll: {
@@ -18,7 +17,7 @@ export const globalStyle = StyleSheet.create({
         alignItems: 'center'
     },
     header: {
-        backgroundColor: '4FE7AF'
+        backgroundColor: '#4FE7AF'
     },
     customInput: {
         backgroundColor: '#EDF2FA',
