@@ -10,33 +10,37 @@ import { globalStyle } from "../styles/globalStyle"
 
 import IrregularHeader from "../components/IrregularHeader"
 import CustomButton from "../components/CustomButton"
-import CustomAlert from "../components/CustomAlert"
+import LoadingModal from "../components/LoadingModal"
 
-export default function RegisterClient({ navigation }) {
-    const [modalVisible, setModalVisible] = useState(false)
+export default function RegisterClient({ route, navigation }) {
+    const { setMessage } = route.params
     const [user, setUser] = useState([])
+    const [modalVisible, setModalVisible] = useState(false)
 
     const validationSchema = Yup.object({
         nombre: Yup.string().required("Campo obligatorio"),
-        cedula: Yup.string().min(10).max(10).required("Campo obligatorio"),
+        cedula: Yup.string().min(10, "La cédula debe ser de 10 caracteres").max(10).required("Campo obligatorio"),
         direccion: Yup.string().required("Campo obligatorio"),
-        telefono: Yup.string().min(10).max(10).required("Campo obligatorio"),
+        telefono: Yup.string().min(10).max(10, "El número de telefono debe ser de 10 digitos").required("Campo obligatorio"),
     })
 
     const onCretaClient = async (values) => {
         try {
-            var msg = ""
+            var message = ""
             const firstRes = await createClient(values)
-            msg += firstRes.message + '\n'
+            message += firstRes.message + '\n'
             const data = {
                 cliente_id: firstRes.cliente_id,
                 cuenta_secundaria_id: user.cuenta_secundaria_id,
             }
             const secondRes = await linkClient(data)
-            msg += secondRes.message
-            alert(msg, null, 2)
-            navigation.goBack()
-        } catch (error) { }
+            message += secondRes.message
+            setMessage(message)
+            setModalVisible(false)
+        } catch (error) {
+            setMessage(error)
+            setModalVisible(false)
+        }
     }
 
     const restoreToken = async () => {
@@ -56,37 +60,24 @@ export default function RegisterClient({ navigation }) {
     }, [])
 
     return (
-        <View style={globalStyle.container}>
+        <View style={globalStyle.containerScroll}>
             <IrregularHeader title={'Registrar clientes'} />
-            <View style={{ flex: 1, width: '100%', paddingTop: 20 }}>
+            <LoadingModal modalVisible={modalVisible} />
+            <ScrollView>
                 <Formik
                     key={user}
-                    initialValues={{
-                        cuenta_principal_id: user.cuenta_principal_id,
-                        nombre: "",
-                        cedula: "",
-                        direccion: "",
-                        telefono: "",
-                    }}
-                    onSubmit={(values) => {
-                        // onCretaClient({ ...values, cuenta_principal_id: Number(values.cuenta_principal_id) })
+                    initialValues={{ cuenta_principal_id: user.cuenta_principal_id, nombre: "", cedula: "", direccion: "", telefono: "", }}
+                    onSubmit={(values, { resetForm }) => {
                         setModalVisible(true)
                         setTimeout(() => {
                             onCretaClient(values)
+                            navigation.goBack()
                         }, 2000)
                     }}
                     validationSchema={validationSchema}
                 >
-                    {({
-                        handleChange,
-                        handleBlur,
-                        handleSubmit,
-                        values,
-                        errors,
-                        touched,
-                    }) => (
-                        <ScrollView style={{ paddingHorizontal: 15 }} showsVerticalScrollIndicator={false}>
-                            <Text>{values.cuenta_principal_id}</Text>
+                    {({ handleChange, handleBlur, handleSubmit, values, errors, touched, }) => (
+                        <View style={{ padding: 25 }}>
                             <TextInput
                                 onChangeText={handleChange("nombre")}
                                 onBlur={handleBlur("nombre")}
@@ -130,10 +121,10 @@ export default function RegisterClient({ navigation }) {
                                 <Text style={globalStyle.textError}>{errors.telefono}</Text>
                             ) : null}
                             <CustomButton title={"REGISTRAR"} funcion={() => handleSubmit()} />
-                        </ScrollView>
+                        </View>
                     )}
                 </Formik>
-            </View>
+            </ScrollView>
         </View>
     )
 }

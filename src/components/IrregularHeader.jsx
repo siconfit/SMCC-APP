@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image } from 'react-native'
 const IrregularHeader = ({ title, children }) => {
     return (
         <>
-            <View style={styles.headerContainer}>
+            <View style={[styles.headerContainer]}>
                 <Text style={styles.headerText}>{title}</Text>
                 {children}
             </View>
@@ -25,12 +25,13 @@ const IrregularHeader = ({ title, children }) => {
 
 const styles = StyleSheet.create({
     headerContainer: {
-        backgroundColor: '#4FE7AF', // Color de fondo del encabezado
-        height: 75, // Altura del encabezado
-        justifyContent: 'flex-end',
+        backgroundColor: '#4FE7AF',
         alignItems: 'center',
         width: '100%',
-        position: 'relative'
+        position: 'relative',
+        minHeight: 75,
+        height: 'auto',
+        justifyContent: 'flex-end',
     },
     headerText: {
         fontSize: 24,

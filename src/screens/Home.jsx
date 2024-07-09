@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from "react"
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { Text, View, TextInput } from "react-native"
+import { View, TextInput } from "react-native"
+import { Text, Avatar } from 'react-native-paper'
 import { globalStyle } from "../styles/globalStyle"
 import { MiContexto } from "../navigation/AuthContext"
 import CustomButton from "../components/CustomButton"
@@ -8,7 +9,7 @@ import IrregularHeader from "../components/IrregularHeader"
 
 export default function Home() {
   const cerrarSesion = useContext(MiContexto)
-  const [user, setUser] = useState("")
+  const [user, setUser] = useState({})
 
   const onLogout = async () => {
     try {
@@ -24,7 +25,7 @@ export default function Home() {
       const token = await AsyncStorage.getItem("userToken")
       if (token !== null) {
         setUser(JSON.parse(token))
-        // console.log(JSON.parse(token))
+        console.log(JSON.parse(token))
       }
     } catch (e) {
       console.log(e)
@@ -38,10 +39,15 @@ export default function Home() {
 
   return (
     <View style={globalStyle.container}>
-      <IrregularHeader title={'Inicio'} />
-      <View style={{ flex: 1, justifyContent: 'center' }}>
+      <IrregularHeader>
+        <Avatar.Icon size={100} icon={'account'} style={{ backgroundColor: '#009688', marginVertical: 25 }} />
+        <Text variant="titleLarge" style={{ color: 'white', fontWeight: 'bold', textAlign: 'center', marginVertical: 25 }} >Bienvenido {user.nombre} </Text>
+      </IrregularHeader>
+      <View style={{ flex: 1 }}>
+        <Text style={globalStyle.customInput}>{user.cedula} </Text>
+        <Text style={globalStyle.customInput}>{user.telefono} </Text>
+        <Text style={globalStyle.customInput}>{user.rol == 2 ? 'usuario' : 'administrador'} </Text>
 
-        <Text>Bienvenido {user.nombre} </Text>
         <CustomButton
           title={'Cerrar Sesion'}
           funcion={() => onLogout()}

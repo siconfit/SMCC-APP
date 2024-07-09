@@ -1,19 +1,17 @@
 import { View, TextInput, ScrollView } from "react-native"
 import { useState } from "react"
 
-import { Text } from "react-native-paper"
+import { Text, Portal, Dialog, Button } from "react-native-paper"
 import { Formik } from "formik"
 import * as Yup from "yup"
 
-import { calcularCredito } from "../services/Credits"
-import { globalStyle } from "../styles/globalStyle"
+import { calcularCredito, createCredit } from "../../services/Credits"
+import { globalStyle } from "../../styles/globalStyle"
 
-import IrregularHeader from "../components/IrregularHeader"
-import PaymentsModal from "../components/PaymentsModal"
-import PeriodPicker from "../components/PeriodPicker"
-import CustomButton from "../components/CustomButton"
-import LoadingModal from "../components/LoadingModal"
-import CustomAlert from "../components/CustomAlert"
+import IrregularHeader from "../../components/IrregularHeader"
+import PeriodPicker from "../../components/PeriodPicker"
+import CustomButton from "../../components/CustomButton"
+import LoadingModal from "../../components/LoadingModal"
 
 const ValidationSchema = Yup.object().shape({
     valor_inicial: Yup.number()
@@ -28,34 +26,64 @@ const ValidationSchema = Yup.object().shape({
         .min(1, 'Campo obligatorio')
 })
 
-const Calculator = () => {
+const RegisterCredit = ({ route, navigation }) => {
+    const { data, setMessage } = route.params
     const [modalVisible, setModalVisible] = useState(false)
     const [visible, setVisible] = useState(false)
-    const [data, setData] = useState([])
+    const [creditData, setCreditData] = useState([])
+    const [cuotas, setCuotas] = useState([])
     const showDialog = () => setVisible(true)
     const hideDialog = () => setVisible(false)
 
+    const confirmCredit = async () => {
+        const response = await createCredit(creditData)
+        setMessage(response.message)
+    }
+
     return (
         <View style={globalStyle.containerScroll}>
-            <IrregularHeader title="Calculadora de Crédito" />
+            <IrregularHeader title="Registar Crédito" />
             <LoadingModal modalVisible={modalVisible} />
-            <PaymentsModal visible={visible} hideModal={hideDialog} paymentsArray={data} />
+            <Portal>
+                <Dialog visible={visible} onDismiss={hideDialog}>
+                    <Dialog.Title>¿Seguro que quiere registrar el crédito?</Dialog.Title>
+                    <Dialog.Content>
+                        <Text variant="bodyMedium">
+                            Credito de {creditData.valor_total}$ con un interes de {creditData.interes}%,{
+                                creditData.cuota_final ?
+                                    ` a pagar en ${creditData.numero_cuotas - 1} cuotas de ${creditData.valor_cuota}$ y una cuota final de ${creditData.cuota_aux}$`
+                                    :
+                                    ` a pagar en ${creditData.numero_cuotas} cuotas de ${creditData.valor_cuota}$`
+                            }
+                        </Text>
+                    </Dialog.Content>
+                    <Dialog.Actions>
+                        <Button onPress={() => {
+                            confirmCredit()
+                            navigation.goBack()
+                        }}>Si</Button>
+                        <Button onPress={hideDialog}>No</Button>
+                    </Dialog.Actions>
+                </Dialog>
+            </Portal>
+            <Text variant="labelSmall" style={{ textAlign: 'center' }}>Asegurarse de ingresar correctamente los datos</Text>
             <ScrollView >
                 <Formik
-                    initialValues={{ valor_inicial: "", duracion: "", interes: "", periodo: 0 }}
+                    initialValues={{ cliente_id: data.cliente_id, valor_inicial: "", duracion: "", interes: "", periodo: 0 }}
                     onSubmit={(values) => {
                         setModalVisible(true)
                         setTimeout(async () => {
                             const result = await calcularCredito(values)
-                            setData(result.lista_pagos)
+                            setCreditData(result.data)
+                            setCuotas(result.lista_pagos)
                             setModalVisible(false)
                             showDialog()
                         }, 2000)
                     }}
-                    validationSchema={ValidationSchema}
-                >
+                    validationSchema={ValidationSchema}>
                     {({ handleChange, handleBlur, handleSubmit, setFieldValue, values, errors, touched }) => (
                         <View style={{ padding: 25 }}>
+                            <Text>{values.cliente_id}</Text>
                             <TextInput
                                 onChangeText={handleChange("valor_inicial")}
                                 onBlur={handleBlur("valor_inicial")}
@@ -89,7 +117,7 @@ const Calculator = () => {
                             {errors.periodo && touched.periodo ? <Text style={globalStyle.textError}>{errors.periodo}</Text> : null}
 
                             <CustomButton
-                                title={'SIMULAR'}
+                                title={'REGISTRAR'}
                                 funcion={() => handleSubmit()}
                             />
                         </View>
@@ -100,4 +128,4 @@ const Calculator = () => {
     )
 }
 
-export default Calculator
+export default RegisterCredit
