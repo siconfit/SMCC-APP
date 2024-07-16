@@ -1,3 +1,4 @@
+const API_URL = 'http://192.168.1.9:3000'
 // export const getClients = async () => {
 //     try {
 //         const result = await fetch('http://192.168.1.9:3000/clients')
@@ -13,7 +14,7 @@
 
 export const getMyClients = async (id) => {
     try {
-        const result = await fetch('http://192.168.1.9:3000/api/relations/user/' + id)
+        const result = await fetch(API_URL + '/api/relations/user/' + id)
         return result.json()
     } catch (error) {
         return []
@@ -23,7 +24,7 @@ export const getMyClients = async (id) => {
 
 export const createClient = async (values) => {
     try {
-        const result = await fetch('http://192.168.1.9:3000/api/clients', {
+        const result = await fetch(API_URL + '/api/clients', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -41,7 +42,7 @@ export const createClient = async (values) => {
 
 export const linkClient = async (values) => {
     try {
-        const result = await fetch('http://192.168.1.9:3000/api/relations', {
+        const result = await fetch(API_URL + '/api/relations', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
