@@ -8,8 +8,6 @@ import { globalStyle } from '../styles/globalStyle'
 import CreditCard from '../components/CreditCard'
 import { getCreditsClient } from '../services/Credits'
 
-// const creditsArray = [{ "credito_id": "66730d446e4d68486575c8d1", "valor_total": "$298.03", "fecha_emision": "2027-01-22", "duracion_dias": 50, "periodo_cobro": "mensual", "interes": 66, "estado": true }, { "credito_id": "66730d44d6dbc6e338c107f0", "valor_total": "$439.30", "fecha_emision": "2029-06-14", "duracion_dias": 29, "periodo_cobro": "quincenal", "interes": 66, "estado": false }, { "credito_id": "66730d44a103eca413b9bf82", "valor_total": "$114.76", "fecha_emision": "2028-02-21", "duracion_dias": 57, "periodo_cobro": "diario", "interes": 41, "estado": false }, { "credito_id": "66730d449111851db9fe9456", "valor_total": "$393.94", "fecha_emision": "2027-12-12", "duracion_dias": 51, "periodo_cobro": "diario", "interes": 54, "estado": true }, { "credito_id": "66730d444b2b3150f0cab026", "valor_total": "$552.21", "fecha_emision": "2024-06-26", "duracion_dias": 42, "periodo_cobro": "diario", "interes": 92, "estado": true }, { "credito_id": "66730d445a88916056982102", "valor_total": "$327.10", "fecha_emision": "2027-10-18", "duracion_dias": 58, "periodo_cobro": "mensual", "interes": 73, "estado": false }]
-
 export default function ClientProfile({ route, navigation }) {
     const { data } = route.params
     const [credits, setCredits] = useState([])

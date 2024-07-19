@@ -1,4 +1,4 @@
-const API_URL = 'http://192.168.1.9:3000'
+const API_URL = 'https://smcc-api.vercel.app'
 // export const getClients = async () => {
 //     try {
 //         const result = await fetch('http://192.168.1.9:3000/clients')

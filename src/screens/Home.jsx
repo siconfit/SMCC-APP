@@ -25,7 +25,6 @@ export default function Home() {
       const token = await AsyncStorage.getItem("userToken")
       if (token !== null) {
         setUser(JSON.parse(token))
-        console.log(JSON.parse(token))
       }
     } catch (e) {
       console.log(e)

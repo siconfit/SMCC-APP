@@ -1,4 +1,4 @@
-const API_URL = 'http://192.168.1.9:3000'
+const API_URL = 'https://smcc-api.vercel.app'
 
 export const getPayments = async (id) => {
     try {
@@ -68,6 +68,27 @@ export const postponePayments = async (id, creditoID, valorPagado) => {
             body: JSON.stringify({
                 credito_id: creditoID,
                 valor_pagado: valorPagado
+            })
+        })
+        return result.json()
+    } catch (error) {
+        return JSON.stringify({
+            status: 500,
+            result: 'result'
+        })
+    }
+}
+
+export const createPayments = async (array, id) => {
+    try {
+        const result = await fetch(API_URL + '/api/payments', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                arrayPagos: array,
+                credito_id: id
             })
         })
         return result.json()

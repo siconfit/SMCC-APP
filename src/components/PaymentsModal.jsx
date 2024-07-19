@@ -1,4 +1,4 @@
-import { Modal, Portal, Text, Button, Card } from 'react-native-paper'
+import { Modal, Portal, Text, Button, Card, Avatar } from 'react-native-paper'
 import { FlatList, View } from 'react-native'
 
 const PaymentsModal = ({ visible, hideModal, paymentsArray }) => {
@@ -13,13 +13,10 @@ const PaymentsModal = ({ visible, hideModal, paymentsArray }) => {
                         () => <View style={{ marginVertical: 2 }} />
                     }
                     renderItem={({ item, index }) => (
-                        <Card style={styles.container}>
-                            <Card.Title title={fechaString.toLocaleDateString()} subtitle={`${data.valor_pagado} $`}
+                        <Card style={{}}>
+                            <Card.Title title={item.fecha_pago} subtitle={`${item.valor_pagado} $`}
                                 left={() => (
-                                    <Avatar.Text label={num_pago + 1} size={24} color={'#e0f2f1'} style={{ backgroundColor: '#009688' }} />
-                                )}
-                                right={() => (
-                                    <Icon source={data.estado === 0 ? 'minus-circle' : data.estado === 1 ? 'check-circle' : 'close-circle'} color={data.estado === 0 ? '#9e9e9e' : data.estado === 1 ? '#4caf50' : '#f44336'} size={24} />
+                                    <Avatar.Text label={index} size={24} color={'#e0f2f1'} style={{ backgroundColor: '#009688' }} />
                                 )}
                                 style={{ paddingRight: 10 }}
                             />

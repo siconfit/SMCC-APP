@@ -6,6 +6,8 @@ import LoginStack from "./src/navigation/LoginStack"
 import { MiContexto } from "./src/navigation/AuthContext"
 import { PaperProvider } from "react-native-paper"
 import { SafeAreaView } from "react-native"
+import NoAccess from "./src/screens/NoAccess"
+import { subscription } from "./src/services/Users"
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true)
@@ -15,7 +17,17 @@ const App = () => {
     try {
       const token = await AsyncStorage.getItem("userToken")
       setIsLoading(false)
-      setUserToken(token)
+      setUserToken(JSON.parse(token))
+      if (JSON.parse(token)) {
+        const id = JSON.parse(token).estado
+        const result = await subscription(id)
+        if (!result.estado) {
+          await AsyncStorage.removeItem("userToken")
+          restoreToken()
+        }
+      } else {
+        console.log("no hay token")
+      }
     } catch (e) {
       // Restaurando el token falló
     }
@@ -30,11 +42,11 @@ const App = () => {
       <PaperProvider>
         <SafeAreaView style={{ flex: 1 }}>
           <NavigationContainer>
-            {userToken !== null ? (
+            {userToken !== null ?
               <PrincipalStack />
-            ) : (
+              :
               <LoginStack />
-            )}
+            }
           </NavigationContainer>
         </SafeAreaView>
       </PaperProvider>

@@ -28,7 +28,7 @@ const PaymentCard = ({ data, num_pago, pagar, aplazar }) => {
                 </Modal>
             </Portal>
             <Card style={styles.container} onPress={() => showModal()} disabled={data.estado !== 0}>
-                <Card.Title title={fechaString.toLocaleDateString()} subtitle={`${data.valor_pagado} $`}
+                <Card.Title title={fechaString.toLocaleDateString() || 'SF'} subtitle={`${data.valor_pagado} $`}
                     left={() => (
                         <Avatar.Text label={num_pago + 1} size={24} color={'#e0f2f1'} style={{ backgroundColor: '#009688' }} />
                     )}

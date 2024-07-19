@@ -6,6 +6,7 @@ import { Formik } from "formik"
 import * as Yup from "yup"
 
 import { calcularCredito, createCredit } from "../../services/Credits"
+import { createPayments } from "../../services/Payments"
 import { globalStyle } from "../../styles/globalStyle"
 
 import IrregularHeader from "../../components/IrregularHeader"
@@ -36,8 +37,14 @@ const RegisterCredit = ({ route, navigation }) => {
     const hideDialog = () => setVisible(false)
 
     const confirmCredit = async () => {
+        var message = ""
         const response = await createCredit(creditData)
-        setMessage(response.message)
+        message += response.message + '\n'
+        if (response.credito_id) {
+            const payments = await createPayments(cuotas, response.credito_id)
+            message += payments.message
+        }
+        setMessage(message)
     }
 
     return (
@@ -83,7 +90,6 @@ const RegisterCredit = ({ route, navigation }) => {
                     validationSchema={ValidationSchema}>
                     {({ handleChange, handleBlur, handleSubmit, setFieldValue, values, errors, touched }) => (
                         <View style={{ padding: 25 }}>
-                            <Text>{values.cliente_id}</Text>
                             <TextInput
                                 onChangeText={handleChange("valor_inicial")}
                                 onBlur={handleBlur("valor_inicial")}

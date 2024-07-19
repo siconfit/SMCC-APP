@@ -1,4 +1,4 @@
-const API_URL = 'http://192.168.1.9:3000'
+const API_URL = 'https://smcc-api.vercel.app'
 
 export const getPeriods = async () => {
     try {
@@ -123,7 +123,7 @@ export const calcularCredito = async (values) => {
         var atributoFecha
         var atributoValor
         fecha_aux.setDate(fecha_aux.getDate() + periodoData.intervalo)
-        atributoFecha = fecha_aux.toLocaleDateString()
+        atributoFecha = fecha_aux
 
         if (periodoData.fin_semana) {
             if (i == values.duracion - 1 && cuota_final == true) {
@@ -132,7 +132,7 @@ export const calcularCredito = async (values) => {
                 atributoValor = valor_cuota.toFixed(2)
             }
             let nuevoObjeto = {
-                fecha_pago: atributoFecha,
+                fecha_pago: formatDate(atributoFecha),
                 valor_pagado: atributoValor
             }
             lista_pagos.push(nuevoObjeto)
