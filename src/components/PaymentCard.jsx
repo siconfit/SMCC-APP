@@ -4,6 +4,7 @@ import { Card, Avatar, Icon, Portal, Button, Modal } from 'react-native-paper'
 
 const PaymentCard = ({ data, num_pago, pagar, aplazar }) => {
     const fechaString = new Date(data.fecha_pago)
+    const opciones = { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }
     const [visible, setVisible] = useState(false)
     const showModal = () => setVisible(true)
     const hideModal = () => setVisible(false)
@@ -28,7 +29,7 @@ const PaymentCard = ({ data, num_pago, pagar, aplazar }) => {
                 </Modal>
             </Portal>
             <Card style={styles.container} onPress={() => showModal()} disabled={data.estado !== 0}>
-                <Card.Title title={fechaString.toLocaleDateString() || 'SF'} subtitle={`${data.valor_pagado} $`}
+                <Card.Title title={fechaString.toLocaleDateString('es-EC', opciones) || 'SF'} subtitle={`${data.valor_pagado} $`}
                     left={() => (
                         <Avatar.Text label={num_pago + 1} size={24} color={'#e0f2f1'} style={{ backgroundColor: '#009688' }} />
                     )}

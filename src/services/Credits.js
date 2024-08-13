@@ -144,7 +144,7 @@ export const calcularCredito = async (values) => {
                     atributoValor = valor_cuota.toFixed(2)
                 }
                 let nuevoObjeto = {
-                    fecha_pago: atributoFecha,
+                    fecha_pago: formatDate(atributoFecha),
                     valor_pagado: atributoValor
                 }
                 lista_pagos.push(nuevoObjeto)
